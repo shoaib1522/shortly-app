@@ -6,14 +6,9 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
-
-# --- THIS IS THE DEFINITIVE FIX ---
-# We explicitly grant execute permissions to the Vite binary inside node_modules.
-RUN chmod +x ./node_modules/.bin/vite
-
-# Now, we can reliably run the build script.
+# We can use the standard 'npm run build' as the permission issues
+# from a previous error are not relevant to this final structure.
 RUN npm run build
-# ------------------------------------
 
 
 # --- Stage 2: Build the Final Python/FastAPI Image ---
@@ -21,7 +16,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 ENV PYTHONPATH=.
-ENV RUNNING_IN_D-OCKER=1
+# --- THIS IS THE DEFINITIVE FIX ---
+# Correct the environment variable name to remove the typo.
+# It now perfectly matches what the Python code is looking for.
+ENV RUNNING_IN_DOCKER=1
+# --------------------------------
 
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
