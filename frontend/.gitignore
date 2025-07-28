@@ -1,0 +1,20 @@
+# .gitignore (root level)
+
+# IDE and Editor directories
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Build artifacts (if any are created at the root)
+/build/
+
+# Local environment files
+.env
+.env.local
+
+# Python virtual environment (if created at the root)
+.venv/
+venv/

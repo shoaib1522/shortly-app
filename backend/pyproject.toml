@@ -1,0 +1,13 @@
+# backend/pyproject.toml
+
+[tool.black]
+# A regular expression telling Black to ignore common virtual environment
+# and build artifact folders.
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | dist
+)/
+'''

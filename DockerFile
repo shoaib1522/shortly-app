@@ -1,0 +1,48 @@
+# Dockerfile
+
+# --- Stage 1: Build the React Frontend ---
+# Use an official Node.js image as the "builder" stage
+FROM node:20-alpine AS builder
+
+# Set the working directory for the frontend build
+WORKDIR /app/frontend
+
+# Copy package.json and package-lock.json first for better caching
+COPY frontend/package*.json ./
+# Use 'npm ci' for a clean, deterministic install
+RUN npm ci
+
+# Copy the rest of the frontend source code
+COPY frontend/ ./
+
+# Run the production build command, creating the /dist folder
+RUN npm run build
+
+
+# --- Stage 2: Build the Final Python/FastAPI Image ---
+# Start from a slim, efficient Python base image
+FROM python:3.11-slim
+
+# Set the working directory for the final application
+WORKDIR /app
+
+# Set the PYTHONPATH environment variable so absolute imports from 'backend' work
+ENV PYTHONPATH=.
+
+# Install Python dependencies first
+COPY backend/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the backend application code into a 'backend' subdirectory
+COPY ./backend ./backend
+
+# --- This is the key step ---
+# Copy the built static files from the 'builder' stage's /dist folder
+# into a directory named 'static' in our final image.
+COPY --from=builder /app/frontend/dist ./static
+
+# Expose the port the FastAPI application will run on
+EXPOSE 8000
+
+# The command to run the application when the container starts
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

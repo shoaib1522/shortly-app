@@ -1,0 +1,17 @@
+# frontend/.gitignore
+
+# Dependencies
+/node_modules
+
+# Build output
+/dist
+
+# Test coverage
+/coverage
+
+# Local environment files
+.env.local
+.env.*.local
+
+# IDE and OS files
+.DS_Store

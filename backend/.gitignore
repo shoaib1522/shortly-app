@@ -1,0 +1,16 @@
+# backend/.gitignore
+
+# Python virtual environment
+venv/
+.venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Database file
+*.db
+
+# Test artifacts
+.pytest_cache/
+coverage.xml

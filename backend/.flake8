@@ -1,0 +1,7 @@
+# backend/.flake8
+
+[flake8]
+# Exclude these directories from linting checks.
+exclude = venv, __pycache__, .pytest_cache
+# Set the max line length to match Black's default.
+max-line-length = 88
