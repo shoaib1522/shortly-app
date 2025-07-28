@@ -2,15 +2,17 @@
 
 import sqlite3
 
-# FIX: 'Depends' was imported but never used in this file, so we remove it.
-# from fastapi import Depends
-
+# This is the default database file for the main application
 DATABASE_URL = "shortly.db"
 
 
-def init_db():
+# --- THIS IS THE FIX ---
+# We update the function to accept an optional 'db_url' argument.
+# This allows our tests to pass in the in-memory database URL,
+# while the main application can still call it without any arguments.
+def init_db(db_url: str = DATABASE_URL):
     """Initializes the database. Creates the 'urls' table if it doesn't exist."""
-    with sqlite3.connect(DATABASE_URL) as conn:
+    with sqlite3.connect(db_url, uri=("mode=memory" in db_url)) as conn:
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS urls (
