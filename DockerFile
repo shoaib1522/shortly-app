@@ -13,7 +13,6 @@ RUN npm run build
 FROM python:3.11-slim
 WORKDIR /app
 
-# Set the PYTHONPATH environment variable so absolute imports from 'backend' work
 ENV PYTHONPATH=.
 # Set the environment variable to tell our app it's in production mode.
 ENV RUNNING_IN_DOCKER=1
