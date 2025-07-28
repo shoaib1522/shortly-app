@@ -9,7 +9,6 @@ COPY frontend/ ./
 
 # --- THIS IS THE DEFINITIVE FIX ---
 # We explicitly grant execute permissions to the Vite binary inside node_modules.
-# This solves the 'Permission denied' error in minimal container environments.
 RUN chmod +x ./node_modules/.bin/vite
 
 # Now, we can reliably run the build script.
