@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       
-      # --- Frontend Validation ---
+      # Frontend Validation
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -31,7 +31,7 @@ jobs:
         run: npm test
         working-directory: ./frontend
 
-      # --- Backend Validation ---
+      # Backend Validation
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -43,6 +43,7 @@ jobs:
           black --check .
         working-directory: ./backend
       - name: Run Backend Tests
+        # Run pytest from the root, pointing to the backend tests.
         run: pytest backend/
   
   build-and-push-docker:
@@ -64,5 +65,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          # Example tag: your-docker-id/shortly-app:latest
           tags: ${{ secrets.DOCKER_USERNAME }}/shortly-app:latest
