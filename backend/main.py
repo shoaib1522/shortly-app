@@ -80,7 +80,6 @@ if IS_DOCKER:
     print("Running in PRODUCTION mode. Serving static files.")
     app.mount("/assets", StaticFiles(directory="static/assets"), name="static")
 
-    # This catch-all route must be the LAST route defined
     @app.get("/{full_path:path}", response_class=FileResponse)
     async def serve_react_app(full_path: str):
         return FileResponse("static/index.html")
