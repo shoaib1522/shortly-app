@@ -33,17 +33,22 @@ if not IS_DOCKER:
         allow_headers=["*"],
     )
 
+
 # --- API Data Models ---
 class URLBase(BaseModel):
     url: HttpUrl
 
+
 class URLShortenResponse(BaseModel):
     short_url: str
+
 
 # --- API Endpoints ---
 @app.post("/api/shorten", response_model=URLShortenResponse)
 def create_short_url(
-    url_item: URLBase, request: Request, conn: sqlite3.Connection = Depends(get_db_connection)
+    url_item: URLBase,
+    request: Request,
+    conn: sqlite3.Connection = Depends(get_db_connection),
 ):
     original_url = str(url_item.url)
     cursor = conn.cursor()
@@ -57,6 +62,7 @@ def create_short_url(
     full_short_url = f"{base_url}{short_code}"
     return {"short_url": full_short_url}
 
+
 @app.get("/{short_code}")
 def redirect_to_url(
     short_code: str, conn: sqlite3.Connection = Depends(get_db_connection)
@@ -67,6 +73,7 @@ def redirect_to_url(
     if not row:
         raise HTTPException(status_code=404, detail="Short URL not found")
     return RedirectResponse(url=row["original_url"], status_code=307)
+
 
 # --- Static File Serving (Only runs in Docker/Production) ---
 if IS_DOCKER:
