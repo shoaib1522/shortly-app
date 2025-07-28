@@ -34,7 +34,6 @@ if not IS_DOCKER:
     )
 
 
-# --- API Data Models ---
 class URLBase(BaseModel):
     url: HttpUrl
 
