@@ -6,8 +6,14 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
-# We can use the standard 'npm run build' as the permission issues
-# from a previous error are not relevant to this final structure.
+
+# --- THIS IS THE DEFINITIVE FIX ---
+# We explicitly grant execute permissions (+x) to the Vite binary inside node_modules.
+# This solves the 'Permission denied' error in minimal container environments.
+RUN chmod +x ./node_modules/.bin/vite
+# ------------------------------------
+
+# Now, we can reliably run the build script.
 RUN npm run build
 
 
@@ -16,11 +22,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 ENV PYTHONPATH=.
-# --- THIS IS THE DEFINITIVE FIX ---
-# Correct the environment variable name to remove the typo.
-# It now perfectly matches what the Python code is looking for.
 ENV RUNNING_IN_DOCKER=1
-# --------------------------------
 
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
